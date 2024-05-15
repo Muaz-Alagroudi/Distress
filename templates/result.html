@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asphalt</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}">
+</head>
+<body>
+<header>
+    <h1 class="header">Prediction Result</h1>
+    <div class="center">
+        <form method="get" action="/">
+            <img src="{{ image }}" alt="Selected Image" class="image">
+            <button type="submit" class="submit">back</button>
+        </form>
+    </div>
+
+    <p class="intro">The predicted class is: {{ predicted_class }}</p>
+</header>
+<footer>
+    <div class="footer">
+        Created using a Keras sequential CNN model <br>
+        by : Muaz Alagroudi <br>
+        malagroudi@gmail.com <br>
+        <a href=" https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a> <br>
+        <a href=" https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
+    </div>
+
+</footer>
+
+</body>
+</html>

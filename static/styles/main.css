@@ -1,0 +1,190 @@
+body {
+/*    background-image: linear-gradient(to right, #b2b7ff, #383cc5);*/
+    background:
+    conic-gradient(#00325d 25%,#0000 0) 0 0/calc(2*100px) calc(100px/9.5),
+    conic-gradient(#00325d 25%,#0000 0) 0 0/calc(100px/9.5) calc(2*100px),
+    repeating-conic-gradient(#0000 0 25%,#00325d 0 50%)
+    100px 0 /calc(2*100px) calc(2*100px),
+    radial-gradient(50% 50%,#000005 98%,#00325d)
+    0 0/100px 100px;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    /*    align-items: center;*/
+    justify-content: center;
+    height: 100vh; /* Ensure full viewport height */
+}
+
+.prediction {
+    padding:10px;
+    border-radius:5px;
+    background-color: #00000074;
+    font-size: 20px;
+}
+
+img {
+    border:5px solid #a27900;
+    border-radius: 10px;
+    max-width:300px;
+}
+
+header {
+/*    background-color: #c7e38a;*/
+    margin: 0 auto;
+    max-width: 550px;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    flex: 0 0 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+form {
+    margin: 0 auto;
+    /*    background-color: #965d5d;*/
+    padding: 10px;
+    width: 100%;
+    height: 40%;
+    max-width: 300px;
+    margin-top: 20px;
+    display: grid;
+    grid-template-areas:
+    'choose' 'submit';
+    grid-row-gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.result{
+    max-width: 90%;
+    background-color: blue;
+    width: 100%;
+    margin: 0 auto;
+}
+/* Style the label to look like a button */
+/* Hide the file input */
+.choose {
+    display: none;
+}
+.image {
+    grid-area:choose;
+}
+/* Style the label to look like a button */
+.choose-button, .submit{
+    font-size:40px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    border: 2px solid;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*    line-height: 1; *//* Ensure the button height is based on its content */
+}
+.choose-button{
+/*    margin-top:20px;*/
+}
+
+.back{
+    max-width: 100px;
+    font-size:40px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    border: 2px solid;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    border-radius: 15px;
+    font-size: 30px;
+    padding: 15px;
+    background-color: #00000074;
+}
+
+
+
+.intro{
+    margin-top:5px;
+    border-radius: 15px;
+    text-align: left;
+    font-size: 20px;
+    padding: 15px;
+    background-color: #00000074;
+}
+/* Add hover effect */
+.choose-button:hover {
+    background-color: #8f94fb;
+}
+
+/* Change color when clicked */
+.choose:active + .choose-button {
+    background-color: #333;
+}
+.choose-button {
+    border-color: white;
+    background-color: #344294;
+
+}
+
+.submit {
+    background-color: #41a600;
+    grid-area: submit;
+}
+.submit:hover {
+    background-color: #40ff00;
+}
+.submit:active {
+    background-color: #1f3f00;
+
+}
+footer {
+    align-text: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    background-color: #0f1726;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    flex: 1; /* Let footer occupy remaining space */
+}
+.footer {
+    padding-left: 15px;
+    width: 40%;
+    text-align: left;
+}
+a {
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.01s ease-in-out;
+}
+
+
+a:link {
+    color:white;
+}
+
+a:visited {
+    color:white;
+}
+a:hover {
+/*    text-decoration: underline;*/
+/*    background-color:red;*/
+    color : #00d0ff;
+}

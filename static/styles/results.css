@@ -1,0 +1,97 @@
+body {
+/*    background-image: linear-gradient(to right, #b2b7ff, #383cc5);*/
+    background:
+    conic-gradient(#00325d 25%,#0000 0) 0 0/calc(2*100px) calc(100px/9.5),
+    conic-gradient(#00325d 25%,#0000 0) 0 0/calc(100px/9.5) calc(2*100px),
+    repeating-conic-gradient(#0000 0 25%,#00325d 0 50%)
+    100px 0 /calc(2*100px) calc(2*100px),
+    radial-gradient(50% 50%,#000005 98%,#00325d)
+    0 0/100px 100px;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    /*    align-items: center;*/
+    justify-content: center;
+    height: 100vh; /* Ensure full viewport height */
+}
+
+header {
+/*    background-color: #c7e38a;*/
+    margin: 0 auto;
+    color: white;
+    text-align: center;
+    flex: 0 0 75%;
+    display: grid;
+    grid-template-areas:
+    'header'
+    'image'
+    'pred'
+    'button';
+    grid-template-rows:25% 40% 25% 100%;
+}
+.img {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color:#ff000083;
+    grid-area: image;
+
+}
+footer {
+    align-text: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    background-color: #0f1726;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    flex: 1; /* Let footer occupy remaining space */
+}
+.footer {
+    padding-left: 15px;
+    width: 40%;
+    text-align: left;
+}
+a {
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.01s ease-in-out;
+}
+
+.header {
+/*    max-width: 200px;*/
+    grid-area: header;
+    border-radius: 15px;
+    font-size: 30px;
+    padding: 15px;
+    background-color: #00000074;
+}
+
+.prediction {
+    grid-area: pred;
+    border-radius: 15px;
+    font-size: 20px;
+    padding: 10px;
+    background-color: #00000074;
+}
+
+form{
+    grid-area:button
+}
+
+a:link {
+    color:white;
+}
+
+a:visited {
+    color:white;
+}
+a:hover {
+/*    text-decoration: underline;*/
+/*    background-color:red;*/
+    color : #00d0ff;
+}

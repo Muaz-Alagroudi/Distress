@@ -14,14 +14,14 @@ def resize_grayscale(image, width, height=None):
     return image
 
 
-def plot_image(image, label=None):
-    """Plots a single image with an optional label"""
-    plt.imshow(image)
-    plt.xlabel(label)
-    plt.xticks(None)
-    plt.yticks(None)
-    plt.tight_layout()
-    plt.show()
+# def plot_image(image, label=None):
+#     """Plots a single image with an optional label"""
+#     plt.imshow(image)
+#     plt.xlabel(label)
+#     plt.xticks(None)
+#     plt.yticks(None)
+#     plt.tight_layout()
+#     plt.show()
 
 
 def is_image(file_path):
@@ -34,20 +34,21 @@ def is_image(file_path):
     return extension.lower() in image_extensions
 
 
-def augment_dir(dir_path, depth=0):
+def augment_dir(dir_path, depth=0, verbose=False):
     """Recursively go through each directory and augments images along the way"""
 
     # Iterate through the files in the folder or directory
     for entry in os.scandir(dir_path):
         if entry.is_dir():
-            # print("\t" * depth + "In directory ", entry.name)
+            if verbose:
+                print("\t" * depth + "In directory ", entry.name)
             augment_dir(os.path.join(dir_path, entry.name), depth + 1)
         else:
             if is_image(entry.name):
                 path = os.path.join(dir_path, entry.name)
-                # print("\t" * depth + entry.name + " in directory ", dir_path)
+                if verbose:
+                    print("\t" * depth + entry.name)
                 augment_image(path, entry.name)
-                # print("\t" * depth + f"an image {entry.name}")
 
 
 def augment_image(image_path, name=''):
@@ -70,6 +71,47 @@ def augment_image(image_path, name=''):
         brightness_img.save(os.path.join(parent, f'b_{name}.png'))
 
 
-directory_path = 'Flexible Pavement Distresses'
-# augment_dir(directory_path)
-augment_dir(directory_path)
+def load_images_from_dirs(directory_paths, size=64):
+    """Load images from a list of directories and returns a np.array of images
+    that are resized/gray scaled and a list of labels"""
+    images = []
+    labels = []
+    for i, directory in enumerate(directory_paths):
+        for filename in os.listdir(directory):
+            img_path = os.path.join(directory, filename)
+            if os.path.isfile(img_path):
+                # Load the image using OpenCV
+                img = Image.open(img_path)
+                img = resize_grayscale(img, size)
+                if img is not None:
+                    # Convert the image to RGB (OpenCV loads images in BGR format)
+                    images.append(img)
+                    labels.append(i)
+    return np.array(images), np.array(labels)
+
+
+def get_leaf_directory_paths(root_directory_path):
+    """returns leaf directory paths for a root directory"""
+    leaf_directory_paths = []
+    for dirpath, dirnames,_ in os.walk(root_directory_path):
+        if not dirnames:
+            leaf_directory_paths.append(dirpath)
+    return leaf_directory_paths
+
+
+def predict_sample(model, sample, class_names):
+    dimensions = sample.shape
+    sample_reshape = sample.reshape(1, dimensions[1], dimensions[1], 1)
+    print(f'sample shape {sample.shape}')
+    prediction = model.predict(sample)
+    index = np.argmax(prediction)
+    class_name = class_names[index]
+    dimensions = sample.shape
+    sample_reshape = sample.reshape(dimensions[1], dimensions[2], 1)
+    plt.figure(figsize=(5, 5))
+    plt.imshow(sample_reshape)
+    plt.xlabel(class_name)
+    plt.xticks(None)
+    plt.yticks(None)
+    plt.tight_layout()
+    plt.show()

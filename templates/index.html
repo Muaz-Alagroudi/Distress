@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asphalt</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}">
+</head>
+<body>
+<header>
+    <h1 class="header">Distress Detection</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+
+        <!--        <input type="file" name="file" accept="image/*" class="choose">-->
+        <input type="file" name="file" accept="image/*" class="choose" id="file-upload">
+        <label for="file-upload" class="choose-button">Choose an Image</label>
+
+
+        <button type="submit" class="submit">Upload and Predict</button>
+    </form>
+    <p class="intro">
+        Discover distresses on streets with ease. Our machine learning-driven platform quickly
+        categorizes various road issues from your uploaded images. Efficient. Insightful. Get started now.
+    </p>
+</header>
+<footer>
+    <div class="footer">
+        Created using a Keras sequential CNN model <br>
+        by : Muaz Alagroudi <br>
+        malagroudi@gmail.com <br>
+        <a href=" https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a> <br>
+        <a href=" https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
+    </div>
+
+</footer>
+
+</body>
+</html>
