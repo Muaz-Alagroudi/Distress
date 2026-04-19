@@ -3,36 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asphalt</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}">
+    <title>PaveScan — Road Distress Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
-<header>
-    <h1 class="header">Distress Detection</h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
 
-        <!--        <input type="file" name="file" accept="image/*" class="choose">-->
-        <input type="file" name="file" accept="image/*" class="choose" id="file-upload">
-        <label for="file-upload" class="choose-button">Choose an Image</label>
+<div class="page-wrapper">
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-icon">&#9679;</span>
+            <span class="logo-text">PaveScan</span>
+        </div>
+        <span class="nav-badge">CNN Model</span>
+    </nav>
 
+    <main class="main-content">
+        <div class="hero">
+            <h1 class="hero-title">Road Distress<br><span class="accent">Detection</span></h1>
+            <p class="hero-subtitle">
+                Upload a pavement photo and our CNN model will classify the distress type and severity in seconds.
+            </p>
+        </div>
 
-        <button type="submit" class="submit">Upload and Predict</button>
-    </form>
-    <p class="intro">
-        Discover distresses on streets with ease. Our machine learning-driven platform quickly
-        categorizes various road issues from your uploaded images. Efficient. Insightful. Get started now.
-    </p>
-</header>
-<footer>
-    <div class="footer">
-        Created using a Keras sequential CNN model <br>
-        by : Muaz Alagroudi <br>
-        malagroudi@gmail.com <br>
-        <a href=" https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a> <br>
-        <a href=" https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
-    </div>
+        <div class="upload-card">
+            <form action="/predict" method="post" enctype="multipart/form-data" id="upload-form">
+                <input type="file" name="file" accept="image/*" id="file-upload" class="file-input">
+                <label for="file-upload" class="drop-zone" id="drop-zone">
+                    <div class="drop-zone-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                        </svg>
+                    </div>
+                    <p class="drop-zone-text">Drop your image here</p>
+                    <p class="drop-zone-sub">or <span class="link-text">browse files</span></p>
+                    <p class="drop-zone-hint">Supports JPG, PNG, WEBP</p>
+                    <div class="file-preview" id="file-preview"></div>
+                </label>
 
-</footer>
+                <button type="submit" class="btn-primary" id="submit-btn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="btn-icon">
+                        <path d="M9.25 13.25a.75.75 0 001.5 0V4.636l2.955 3.129a.75.75 0 001.09-1.03l-4.25-4.5a.75.75 0 00-1.09 0l-4.25 4.5a.75.75 0 101.09 1.03L9.25 4.636v8.614z"/>
+                        <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z"/>
+                    </svg>
+                    Analyze Image
+                </button>
+            </form>
+        </div>
 
+        <div class="classes-grid">
+            <div class="class-card">
+                <span class="class-dot low"></span>
+                <span>Longitudinal / Traverse</span>
+            </div>
+            <div class="class-card">
+                <span class="class-dot med"></span>
+                <span>Pothole</span>
+            </div>
+            <div class="class-card">
+                <span class="class-dot high"></span>
+                <span>Ravelling &amp; Weathering</span>
+            </div>
+            <div class="class-card">
+                <span class="class-dot med"></span>
+                <span>Patch</span>
+            </div>
+            <div class="class-card">
+                <span class="class-dot high"></span>
+                <span>Rutting</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <span>Built with a Keras Sequential CNN &mdash; Muaz Alagroudi</span>
+            <div class="footer-links">
+                <a href="mailto:malagroudi@gmail.com">malagroudi@gmail.com</a>
+                <a href="https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a>
+                <a href="https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const input = document.getElementById('file-upload');
+    const dropZone = document.getElementById('drop-zone');
+    const preview = document.getElementById('file-preview');
+    const submitBtn = document.getElementById('submit-btn');
+
+    input.addEventListener('change', () => handleFile(input.files[0]));
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            handleFile(file);
+        }
+    });
+
+    function handleFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            dropZone.classList.add('has-file');
+            submitBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
 </body>
 </html>

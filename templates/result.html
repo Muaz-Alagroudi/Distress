@@ -3,31 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asphalt</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}">
+    <title>PaveScan — Result</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
-<header>
-    <h1 class="header">Prediction Result</h1>
-    <div class="center">
-        <form method="get" action="/">
-            <img src="{{ image }}" alt="Selected Image" class="image">
-            <button type="submit" class="submit">back</button>
-        </form>
-    </div>
 
-    <p class="intro">The predicted class is: {{ predicted_class }}</p>
-</header>
-<footer>
-    <div class="footer">
-        Created using a Keras sequential CNN model <br>
-        by : Muaz Alagroudi <br>
-        malagroudi@gmail.com <br>
-        <a href=" https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a> <br>
-        <a href=" https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
-    </div>
+<div class="page-wrapper">
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-icon">&#9679;</span>
+            <span class="logo-text">PaveScan</span>
+        </div>
+        <span class="nav-badge">CNN Model</span>
+    </nav>
 
-</footer>
+    <main class="main-content result-main">
+        <h1 class="hero-title" style="margin-bottom: 2rem;">
+            Analysis <span class="accent">Complete</span>
+        </h1>
+
+        <div class="result-layout">
+            <div class="result-image-card">
+                <p class="card-label">Submitted Image</p>
+                <img src="{{ image }}" alt="Analyzed pavement image" class="result-img">
+            </div>
+
+            <div class="result-info-card">
+                <p class="card-label">Detection Result</p>
+
+                {% set cls = predicted_class | lower %}
+                {% if 'high' in cls %}
+                    {% set severity = 'high' %}
+                {% elif 'medium' in cls %}
+                    {% set severity = 'med' %}
+                {% elif 'low' in cls %}
+                    {% set severity = 'low' %}
+                {% else %}
+                    {% set severity = 'neutral' %}
+                {% endif %}
+
+                <div class="severity-badge severity-{{ severity }}">
+                    {% if severity == 'high' %}High Severity
+                    {% elif severity == 'med' %}Medium Severity
+                    {% elif severity == 'low' %}Low Severity
+                    {% else %}Detected
+                    {% endif %}
+                </div>
+
+                <h2 class="predicted-class">{{ predicted_class }}</h2>
+
+                <div class="result-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">Model</span>
+                        <span class="meta-value">Keras Sequential CNN</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Input</span>
+                        <span class="meta-value">64 &times; 64 Grayscale</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Classes</span>
+                        <span class="meta-value">13</span>
+                    </div>
+                </div>
+
+                <form method="get" action="/">
+                    <button type="submit" class="btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="btn-icon">
+                            <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
+                        </svg>
+                        Analyze Another Image
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <span>Built with a Keras Sequential CNN &mdash; Muaz Alagroudi</span>
+            <div class="footer-links">
+                <a href="mailto:malagroudi@gmail.com">malagroudi@gmail.com</a>
+                <a href="https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a>
+                <a href="https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</div>
 
 </body>
 </html>
