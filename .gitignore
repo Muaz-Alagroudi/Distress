@@ -30,3 +30,12 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+
+static/*.png
+static/*.jpg
+static/*.jpeg
+static/*.gif
+static/*.webp
+static/*.bmp
+static/*.tiff
+static/*.tif
