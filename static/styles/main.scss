@@ -43,6 +43,14 @@ img {
   display: block;
 }
 
+code {
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.85em;
+  background: rgba($offwhite-rgb, 0.08);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
 // :not(.btn) keeps this from fighting .btn's own color rules: a plain "a" and
 // ".btn--primary:hover" tie on specificity (one class each), and the element
 // selector in "a:hover" then wins the tie-break, silently overriding the
@@ -298,6 +306,8 @@ main.home {
 
   tr:last-child td {
     border-bottom: none;
+    border-top: 1px solid $line;
+    padding-top: 1rem;
   }
 }
 
