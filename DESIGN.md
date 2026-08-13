@@ -27,10 +27,17 @@ high) on the result page.
 
 ## Pages
 
-- `/` (`templates/home.html`): explains what the model detects and how it works, links to `/classify`. No upload form here.
+- `/` (`templates/home.html`): explains what the model detects and how it works, links to `/classify` and `/model`. No upload form here.
 - `/classify` (`templates/classify.html`): the upload form, this is what used to live at `/`.
+- `/model` (`templates/model.html`): explains the `distressCNN.keras` architecture (layer table, param counts, input/output shape). The numbers there came from actually loading the model and reading `model.summary()` / layer configs, not from the commented-out training code in `main.py`, that snippet is a similar but not necessarily identical draft. Re-derive it the same way if the model is ever retrained with a different architecture.
 - `/predict` (`templates/result.html`): POST target, shows the image, severity badge, and predicted class. "Analyze another image" goes back to `/classify`.
-- `templates/navbar.html` and `templates/footer.html` are shared includes across all three pages. The navbar highlights the active link off `request.endpoint` (not `request.path`, which under `APP_PREFIX` doesn't include the `/distress` prefix that `url_for()` adds).
+- `templates/navbar.html` and `templates/footer.html` are shared includes across all pages. The navbar highlights the active link off `request.endpoint` (not `request.path`, which under `APP_PREFIX` doesn't include the `/distress` prefix that `url_for()` adds). Route function for `/model` is named `model_page`, not `model`, that name is taken by the loaded Keras model in `backend.py`.
+- `static/favicon.svg`: the FontAwesome "road" glyph (amber) on a rounded asphalt-dark square, linked from every template's `<head>`.
+
+## Conventions
+
+- **Text aligns left, not center.** `.card`, `.hero`, and `.section` all use `text-align: left`. Earlier drafts centered everything; it read as generic marketing-page style rather than a tool. Self-contained widgets (the dropzone, buttons) can still center their own icon+label internally, that's a widget choice, not body text.
+- **Never let the plain `a` reset touch `.btn`.** The global link color rule is `a:not(.btn)`, not bare `a`. Reasoning: a plain `a` and a one-class button selector like `.btn--primary:hover` tie on CSS specificity (one class/pseudo-class each); the tie-break then falls to the element selector in `a:hover`, which silently wins and overrides the button's intended hover color. Concretely this made CTA link-buttons go invisible on hover (text and background both resolved to the same tint). Any new global element-level reset in this file (links, or anything else applied via a bare tag selector) should get the same `:not(.btn)` treatment, or explicitly redeclare `color` inside every `.btn*:hover` block, don't rely on specificity ties resolving the way you'd expect.
 
 ## Icons
 

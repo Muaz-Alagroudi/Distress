@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Distress Detection</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
@@ -11,7 +12,6 @@
 {% include 'navbar.html' %}
 <main class="home">
     <div class="hero">
-        <span class="badge"><i class="fa-solid fa-road"></i> AI-powered road inspection</span>
         <h1>See road distress the moment you spot it</h1>
         <p class="intro">
             Distress Detection is a Keras convolutional neural network trained to recognize
@@ -28,27 +28,22 @@
         <h2>What it detects</h2>
         <div class="distress-grid">
             <div class="distress-card">
-                <i class="fa-solid fa-circle-minus"></i>
                 <h3>Potholes</h3>
                 <p>Bowl-shaped voids in the pavement surface, rated low, medium, or high severity.</p>
             </div>
             <div class="distress-card">
-                <i class="fa-solid fa-puzzle-piece"></i>
                 <h3>Patching</h3>
                 <p>Repaired sections of the road, flagged so crews can track repair quality over time.</p>
             </div>
             <div class="distress-card">
-                <i class="fa-solid fa-bolt"></i>
                 <h3>Cracking</h3>
                 <p>Longitudinal and transverse cracks running with or across the direction of traffic.</p>
             </div>
             <div class="distress-card">
-                <i class="fa-solid fa-wind"></i>
                 <h3>Ravelling &amp; weathering</h3>
                 <p>Surface aggregate wearing away from age, traffic, or exposure to the elements.</p>
             </div>
             <div class="distress-card">
-                <i class="fa-solid fa-grip-lines"></i>
                 <h3>Rutting</h3>
                 <p>Channelized depressions worn into wheel paths by repeated, heavy loading.</p>
             </div>
@@ -80,9 +75,14 @@
                 </div>
             </li>
         </ol>
-        <a href="{{ url_for('classify') }}" class="btn btn--primary">
-            <i class="fa-solid fa-magnifying-glass"></i> Classify an image
-        </a>
+        <div class="btn-group">
+            <a href="{{ url_for('classify') }}" class="btn btn--primary">
+                <i class="fa-solid fa-magnifying-glass"></i> Classify an image
+            </a>
+            <a href="{{ url_for('model_page') }}" class="btn btn--ghost">
+                <i class="fa-solid fa-diagram-project"></i> View the model
+            </a>
+        </div>
     </div>
 </main>
 {% include 'footer.html' %}

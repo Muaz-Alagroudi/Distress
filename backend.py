@@ -59,6 +59,13 @@ def classify():
     return render_template('classify.html')
 
 
+# Route explaining the model architecture. Named model_page, not model, since
+# `model` above is the loaded Keras model.
+@app.route('/model')
+def model_page():
+    return render_template('model.html')
+
+
 # Route to handle file upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
