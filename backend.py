@@ -8,6 +8,23 @@ import os
 
 app = Flask(__name__)
 
+
+class PrefixMiddleware:
+    """Lets Flask generate correct URLs when reverse-proxied under a path prefix (e.g. /distress)."""
+
+    def __init__(self, wsgi_app, prefix=''):
+        self.wsgi_app = wsgi_app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        if self.prefix and environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+        return self.wsgi_app(environ, start_response)
+
+
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=os.environ.get('APP_PREFIX', ''))
+
 # Load the Keras model
 model = keras.models.load_model('distressCNN.keras')
 
