@@ -25,6 +25,13 @@ high) on the result page.
 - `static/styles/main.css`: compiled output, what the templates actually load, regenerate with `npm run build:css` (see [README.md](README.md))
 - `static/js/main.js`: one small progressive enhancement, shows the chosen filename in the dropzone. The form works fine without it.
 
+## Pages
+
+- `/` (`templates/home.html`): explains what the model detects and how it works, links to `/classify`. No upload form here.
+- `/classify` (`templates/classify.html`): the upload form, this is what used to live at `/`.
+- `/predict` (`templates/result.html`): POST target, shows the image, severity badge, and predicted class. "Analyze another image" goes back to `/classify`.
+- `templates/navbar.html` and `templates/footer.html` are shared includes across all three pages. The navbar highlights the active link off `request.endpoint` (not `request.path`, which under `APP_PREFIX` doesn't include the `/distress` prefix that `url_for()` adds).
+
 ## Icons
 
 FontAwesome, loaded from a CDN `<link>` in each template (no build step needed

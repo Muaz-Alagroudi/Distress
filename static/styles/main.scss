@@ -53,6 +53,55 @@ a {
   }
 }
 
+// ─── Navbar ──────────────────────────────────────────────────────────────────
+.navbar {
+  border-bottom: 1px solid $line;
+  background: $surface;
+}
+
+.navbar-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $offwhite;
+  font-weight: $fw-display;
+
+  &:hover {
+    color: $offwhite;
+  }
+
+  i {
+    color: $amber;
+  }
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  a {
+    color: rgba($offwhite-rgb, 0.65);
+    font-size: 0.9rem;
+    font-weight: $fw-display;
+
+    &:hover,
+    &.active {
+      color: $amber;
+    }
+  }
+}
+
 // ─── Layout shell ────────────────────────────────────────────────────────────
 main {
   flex: 1;
@@ -110,6 +159,123 @@ h1 {
   margin: 0 0 1.75rem;
   color: rgba($offwhite-rgb, 0.7);
   font-size: 0.95rem;
+}
+
+// ─── Home page ───────────────────────────────────────────────────────────────
+main.home {
+  display: block;
+  padding: 0;
+}
+
+.hero {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 4rem;
+  text-align: center;
+
+  h1 {
+    font-size: clamp(1.85rem, 5vw, 2.5rem);
+  }
+
+  .intro {
+    margin: 0 auto 2rem;
+    max-width: 520px;
+  }
+
+  @media (max-width: $bp-sm) {
+    padding: 3.5rem 1.25rem 3rem;
+  }
+}
+
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4.5rem;
+  text-align: center;
+
+  h2 {
+    font-size: clamp(1.35rem, 3.5vw, 1.65rem);
+    font-weight: $fw-display;
+    margin: 0 0 2rem;
+  }
+
+  .btn {
+    margin-top: 2.5rem;
+  }
+}
+
+.distress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  text-align: left;
+}
+
+.distress-card {
+  background: $surface;
+  border: 1px solid $line;
+  border-radius: $card-radius;
+  padding: 1.5rem;
+
+  i {
+    color: $amber;
+    font-size: 1.35rem;
+  }
+
+  h3 {
+    margin: 0.85rem 0 0.4rem;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba($offwhite-rgb, 0.65);
+  }
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+  max-width: 560px;
+  margin: 0 auto;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba($offwhite-rgb, 0.65);
+  }
+}
+
+.step-num {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba($amber-rgb, 0.1);
+  border: 1px solid rgba($amber-rgb, 0.3);
+  color: $amber;
+  font-weight: $fw-display;
+  font-size: 0.9rem;
 }
 
 // ─── Upload form ─────────────────────────────────────────────────────────────

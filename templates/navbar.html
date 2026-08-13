@@ -1,0 +1,11 @@
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="{{ url_for('index') }}" class="navbar-brand">
+            <i class="fa-solid fa-road"></i> Distress Detection
+        </a>
+        <div class="navbar-links">
+            <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a>
+            <a href="{{ url_for('classify') }}" class="{{ 'active' if request.endpoint in ('classify', 'predict') else '' }}">Classify</a>
+        </div>
+    </div>
+</nav>

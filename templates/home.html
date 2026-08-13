@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distress Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+</head>
+<body>
+{% include 'navbar.html' %}
+<main class="home">
+    <div class="hero">
+        <span class="badge"><i class="fa-solid fa-road"></i> AI-powered road inspection</span>
+        <h1>See road distress the moment you spot it</h1>
+        <p class="intro">
+            Distress Detection is a Keras convolutional neural network trained to recognize
+            common pavement distress from a single photo, no measuring tape or inspection
+            software required. Upload a picture of a road surface and get back the distress
+            type and its severity in seconds.
+        </p>
+        <a href="{{ url_for('classify') }}" class="btn btn--primary">
+            <i class="fa-solid fa-magnifying-glass"></i> Classify an image
+        </a>
+    </div>
+
+    <div class="section">
+        <h2>What it detects</h2>
+        <div class="distress-grid">
+            <div class="distress-card">
+                <i class="fa-solid fa-circle-minus"></i>
+                <h3>Potholes</h3>
+                <p>Bowl-shaped voids in the pavement surface, rated low, medium, or high severity.</p>
+            </div>
+            <div class="distress-card">
+                <i class="fa-solid fa-puzzle-piece"></i>
+                <h3>Patching</h3>
+                <p>Repaired sections of the road, flagged so crews can track repair quality over time.</p>
+            </div>
+            <div class="distress-card">
+                <i class="fa-solid fa-bolt"></i>
+                <h3>Cracking</h3>
+                <p>Longitudinal and transverse cracks running with or across the direction of traffic.</p>
+            </div>
+            <div class="distress-card">
+                <i class="fa-solid fa-wind"></i>
+                <h3>Ravelling &amp; weathering</h3>
+                <p>Surface aggregate wearing away from age, traffic, or exposure to the elements.</p>
+            </div>
+            <div class="distress-card">
+                <i class="fa-solid fa-grip-lines"></i>
+                <h3>Rutting</h3>
+                <p>Channelized depressions worn into wheel paths by repeated, heavy loading.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>How it works</h2>
+        <ol class="steps">
+            <li>
+                <span class="step-num">1</span>
+                <div>
+                    <h3>Upload a photo</h3>
+                    <p>Any JPG or PNG of a road surface, taken from a normal walking or driving distance.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">2</span>
+                <div>
+                    <h3>The model analyzes it</h3>
+                    <p>The CNN grayscales and resizes the image, then classifies it against the trained distress types.</p>
+                </div>
+            </li>
+            <li>
+                <span class="step-num">3</span>
+                <div>
+                    <h3>Get your result</h3>
+                    <p>See the predicted distress type and severity alongside your uploaded image.</p>
+                </div>
+            </li>
+        </ol>
+        <a href="{{ url_for('classify') }}" class="btn btn--primary">
+            <i class="fa-solid fa-magnifying-glass"></i> Classify an image
+        </a>
+    </div>
+</main>
+{% include 'footer.html' %}
+</body>
+</html>

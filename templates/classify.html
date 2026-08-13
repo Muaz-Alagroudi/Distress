@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
+{% include 'navbar.html' %}
 <main>
     <div class="card">
-        <span class="badge"><i class="fa-solid fa-road"></i> AI-powered road inspection</span>
-        <h1>Distress Detection</h1>
+        <span class="badge"><i class="fa-solid fa-image"></i> Upload a photo</span>
+        <h1>Classify a road surface</h1>
         <p class="intro">
-            Upload a photo of a road surface and our Keras CNN will classify the pavement
-            distress it finds, potholes, patching, rutting, ravelling, or cracking, along
-            with its severity.
+            JPG or PNG. The model looks for potholes, patching, rutting, ravelling, and cracking.
         </p>
 
         <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
@@ -31,14 +30,7 @@
         </form>
     </div>
 </main>
-<footer>
-    Built with a Keras sequential CNN by Muaz Alagroudi
-    <div class="footer-links">
-        <a href="mailto:malagroudi@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
-        <a href="https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
-        <a href="https://github.com/Muaz-Alagroudi" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a>
-    </div>
-</footer>
+{% include 'footer.html' %}
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -50,7 +50,13 @@ def preprocess_image(image):
 # Route for home page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
+
+
+# Route for the upload/classify page
+@app.route('/classify')
+def classify():
+    return render_template('classify.html')
 
 
 # Route to handle file upload and prediction

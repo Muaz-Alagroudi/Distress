@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
+{% include 'navbar.html' %}
 <main>
     <div class="card">
         <span class="badge"><i class="fa-solid fa-circle-check"></i> Analysis complete</span>
@@ -25,20 +26,11 @@
 
         <p class="result-class">{{ predicted_class }}</p>
 
-        <form method="get" action="{{ url_for('index') }}">
-            <button type="submit" class="btn btn--ghost">
-                <i class="fa-solid fa-arrow-left"></i> Analyze another image
-            </button>
-        </form>
+        <a href="{{ url_for('classify') }}" class="btn btn--ghost">
+            <i class="fa-solid fa-arrow-left"></i> Analyze another image
+        </a>
     </div>
 </main>
-<footer>
-    Built with a Keras sequential CNN by Muaz Alagroudi
-    <div class="footer-links">
-        <a href="mailto:malagroudi@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
-        <a href="https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
-        <a href="https://github.com/Muaz-Alagroudi" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a>
-    </div>
-</footer>
+{% include 'footer.html' %}
 </body>
 </html>
