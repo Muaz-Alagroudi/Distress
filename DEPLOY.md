@@ -21,9 +21,11 @@ Flask app (`backend.py`) serving an upload form that runs a Keras CNN (`distress
 cd /var/www/Distress
 git pull   # if/when this becomes a git remote-backed repo
 venv/bin/pip install -r requirements.txt   # if deps changed
+npm run build:css   # if static/styles/main.scss changed, see DESIGN.md; skip if only main.css changed
 pm2 restart distress-demo-api
 ```
 
 ## Notes
 
-- Templates (`templates/index.html`, `templates/result.html`) use `url_for()` for the predict/index form actions specifically so they resolve correctly under the `/distress` prefix; don't replace those with hardcoded absolute paths.
+- Templates (`templates/index.html`, `templates/result.html`) use `url_for()` for the predict/index form actions and static assets so they resolve correctly under the `/distress` prefix; don't replace those with hardcoded absolute paths.
+- `static/styles/main.css` is compiled from `static/styles/main.scss` and committed, so the VPS doesn't need Node installed to serve the site as-is. Only run `npm run build:css` there if you edited the `.scss` source directly on the box instead of building locally. See [DESIGN.md](DESIGN.md).

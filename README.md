@@ -9,7 +9,7 @@ Live demo: https://glyphtechnology.cloud/distress/
 - `backend.py`: Flask app and `/predict` route (this is what runs in production)
 - `images.py`: image preprocessing helpers
 - `main.py`: scratch/training script, not used in production
-- `templates/`, `static/`: HTML + CSS for the upload form and result page
+- `templates/`, `static/`: HTML + CSS/JS for the upload form and result page, see [DESIGN.md](DESIGN.md)
 
 ## Local setup
 
@@ -20,6 +20,13 @@ venv/bin/python backend.py
 ```
 
 Runs at `http://localhost:5000` (Flask dev server).
+
+If you change `static/styles/main.scss`, rebuild the compiled CSS (see [DESIGN.md](DESIGN.md)):
+
+```bash
+npm install
+npm run build:css
+```
 
 ## Deploy
 

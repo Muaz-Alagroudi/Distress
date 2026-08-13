@@ -1,0 +1,282 @@
+@use 'variables' as *;
+
+// ─── Design tokens ──────────────────────────────────────────────────────────────
+// Single source of truth: every rule below reads colors through a CSS custom
+// property rather than a hardcoded hex value (see _variables.scss for the
+// short $amber / $asphalt / etc. aliases used throughout this file).
+:root {
+  --color-primary: #F2A93B;          // road-marking amber: CTAs, links, focus
+  --color-primary-rgb: 242, 169, 59;
+  --color-primary-hover: #F7C270;    // lighter tint for hover states
+
+  --color-bg: #14171B;               // asphalt: page background
+  --color-bg-rgb: 20, 23, 27;
+  --color-surface: #1D2126;          // card background
+  --color-surface-raised: #262B32;   // dropzone / raised panels
+
+  --color-text: #F4F3EF;             // off-white primary text
+  --color-text-rgb: 244, 243, 239;
+
+  --color-success: #4ADE80;          // low severity
+  --color-warning: #FBBF24;          // medium severity
+  --color-danger: #F87171;           // high severity
+}
+
+// ─── Reset ───────────────────────────────────────────────────────────────────
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $asphalt;
+  color: $offwhite;
+  font-family: $font-sans;
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: $amber;
+  text-decoration: none;
+  transition: color $transition;
+
+  &:hover {
+    color: $amber-tint;
+  }
+}
+
+// ─── Layout shell ────────────────────────────────────────────────────────────
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  background: $surface;
+  border: 1px solid $line;
+  border-radius: $card-radius;
+  padding: 2.5rem;
+  text-align: center;
+
+  @media (max-width: $bp-sm) {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba($amber-rgb, 0.1);
+  border: 1px solid rgba($amber-rgb, 0.25);
+  color: $amber;
+  font-size: 0.72rem;
+  font-weight: $fw-display;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  i {
+    font-size: 0.85rem;
+  }
+}
+
+h1 {
+  margin: 1rem 0 0.5rem;
+  font-size: clamp(1.5rem, 5vw, 1.85rem);
+  font-weight: $fw-display;
+  letter-spacing: -0.01em;
+
+  &.title--sub {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.intro {
+  margin: 0 0 1.75rem;
+  color: rgba($offwhite-rgb, 0.7);
+  font-size: 0.95rem;
+}
+
+// ─── Upload form ─────────────────────────────────────────────────────────────
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dropzone {
+  display: none;
+}
+
+.dropzone-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  border: 1.5px dashed rgba($offwhite-rgb, 0.25);
+  border-radius: 12px;
+  background: $surface-raised;
+  color: rgba($offwhite-rgb, 0.75);
+  cursor: pointer;
+  transition: border-color $transition, color $transition;
+
+  i {
+    font-size: 1.75rem;
+    color: $amber;
+  }
+
+  &:hover,
+  &.has-file {
+    border-color: $amber;
+    color: $offwhite;
+  }
+}
+
+.dropzone-hint {
+  font-size: 0.8rem;
+  color: rgba($offwhite-rgb, 0.5);
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: $fw-display;
+  cursor: pointer;
+  transition: background $transition, transform $transition;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $amber;
+    outline-offset: 2px;
+  }
+}
+
+.btn--primary {
+  background: $amber;
+  color: $asphalt;
+
+  &:hover {
+    background: $amber-tint;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid rgba($offwhite-rgb, 0.25);
+  color: $offwhite;
+
+  &:hover {
+    border-color: $amber;
+    color: $amber;
+  }
+}
+
+// ─── Result page ─────────────────────────────────────────────────────────────
+.result-image {
+  border-radius: 10px;
+  border: 1px solid $line;
+  margin-bottom: 1.5rem;
+  max-height: 280px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.severity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: $fw-display;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &--low {
+    background: rgba($success, 0.12);
+    color: $success;
+  }
+
+  &--medium {
+    background: rgba($warning, 0.12);
+    color: $warning;
+  }
+
+  &--high {
+    background: rgba($danger, 0.12);
+    color: $danger;
+  }
+}
+
+.result-class {
+  margin: 0 0 1.75rem;
+  font-size: 1.1rem;
+  font-weight: $fw-display;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba($offwhite-rgb, 0.45);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba($offwhite-rgb, 0.6);
+
+    &:hover {
+      color: $amber;
+    }
+  }
+}

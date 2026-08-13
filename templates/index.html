@@ -3,36 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asphalt</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}">
+    <title>Distress Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
-<header>
-    <h1 class="header">Distress Detection</h1>
-    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+<main>
+    <div class="card">
+        <span class="badge"><i class="fa-solid fa-road"></i> AI-powered road inspection</span>
+        <h1>Distress Detection</h1>
+        <p class="intro">
+            Upload a photo of a road surface and our Keras CNN will classify the pavement
+            distress it finds, potholes, patching, rutting, ravelling, or cracking, along
+            with its severity.
+        </p>
 
-        <!--        <input type="file" name="file" accept="image/*" class="choose">-->
-        <input type="file" name="file" accept="image/*" class="choose" id="file-upload">
-        <label for="file-upload" class="choose-button">Choose an Image</label>
-
-
-        <button type="submit" class="submit">Upload and Predict</button>
-    </form>
-    <p class="intro">
-        Discover distresses on streets with ease. Our machine learning-driven platform quickly
-        categorizes various road issues from your uploaded images. Efficient. Insightful. Get started now.
-    </p>
-</header>
-<footer>
-    <div class="footer">
-        Created using a Keras sequential CNN model <br>
-        by : Muaz Alagroudi <br>
-        malagroudi@gmail.com <br>
-        <a href=" https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank">LinkedIn</a> <br>
-        <a href=" https://github.com/Muaz-Alagroudi" target="_blank">GitHub</a>
+        <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" class="dropzone" id="file-upload" required>
+            <label for="file-upload" class="dropzone-label" id="dropzone-label">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span id="dropzone-text">Choose an image</span>
+                <span class="dropzone-hint" id="dropzone-hint">JPG or PNG</span>
+            </label>
+            <button type="submit" class="btn btn--primary">
+                <i class="fa-solid fa-magnifying-glass"></i> Analyze image
+            </button>
+        </form>
     </div>
-
+</main>
+<footer>
+    Built with a Keras sequential CNN by Muaz Alagroudi
+    <div class="footer-links">
+        <a href="mailto:malagroudi@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="https://www.linkedin.com/in/muaz-alagroudi-3b00bb223" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+        <a href="https://github.com/Muaz-Alagroudi" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a>
+    </div>
 </footer>
-
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,13 @@
+{
+  "name": "distress-detection-styles",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SCSS build for the Distress Detection Flask app (static/ is what Flask serves; this only compiles CSS, no runtime Node dependency)",
+  "scripts": {
+    "build:css": "sass static/styles/main.scss static/styles/main.css --no-source-map --style=compressed",
+    "watch:css": "sass --watch static/styles/main.scss static/styles/main.css --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.102.0"
+  }
+}

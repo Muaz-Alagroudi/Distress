@@ -1,0 +1,38 @@
+// ─── Colors ──────────────────────────────────────────────────────────────────
+// Canonical hex values live in main.scss (:root custom properties). These are
+// short Sass aliases for use here, plus "-rgb" companions for rgba() calls: a
+// CSS custom property can't be passed directly as rgba()'s color argument, so
+// opacity variants need the raw channel numbers instead.
+$amber:      var(--color-primary);
+$amber-rgb:  var(--color-primary-rgb);
+$amber-tint: var(--color-primary-hover);
+
+$asphalt:     var(--color-bg);
+$asphalt-rgb: var(--color-bg-rgb);
+$surface:     var(--color-surface);
+$surface-raised: var(--color-surface-raised);
+
+$offwhite:     var(--color-text);
+$offwhite-rgb: var(--color-text-rgb);
+
+$success: var(--color-success);
+$warning: var(--color-warning);
+$danger:  var(--color-danger);
+
+// Hairlines on the dark background
+$line: rgba($offwhite-rgb, 0.1);
+
+// ─── Typography ────────────────────────────────────────────────────────────────
+$fw-display: 600;
+$fw-body:    400;
+$font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+// ─── Spacing ─────────────────────────────────────────────────────────────────
+$card-radius: 16px;
+
+// ─── Breakpoints ─────────────────────────────────────────────────────────────
+$bp-sm: 480px;
+$bp-md: 768px;
+
+// ─── Transitions ─────────────────────────────────────────────────────────────
+$transition: 0.2s ease;
