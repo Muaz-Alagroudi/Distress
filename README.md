@@ -2,7 +2,7 @@
 
 Flask app that classifies pavement distress (potholes, patching, rutting, ravelling/weathering, cracking) from an uploaded photo, using a Keras CNN (`distressCNN.keras`).
 
-Live demo: https://glyphtechnology.cloud/distress/
+Live demo: https://glyphtechnology.cloud/Pavescan/
 
 ## Structure
 
