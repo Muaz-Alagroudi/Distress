@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 import keras
 import numpy as np
 from PIL import Image
-import io
 from images import resize_grayscale
 import os
 
@@ -35,6 +34,28 @@ class_names = ['Longitudinal-traverse low severity', 'Longitudinal-traverse medi
                'Ravelling and weathering low severity', 'Ravelling and weathering medium severity', 'Ravelling and weathering high severity',
                'Rutting']
 
+# Maps a class_names prefix to the same distress-type labels used on the
+# homepage's "What it detects" cards, so the result page doesn't leak the
+# raw training-label casing (e.g. "Longitudinal-traverse") to the UI.
+DISTRESS_TYPE_LABELS = {
+    'Longitudinal-traverse': 'Cracking',
+    'patch': 'Patching',
+    'pothole': 'Potholes',
+    'Ravelling and weathering': 'Ravelling & weathering',
+    'Rutting': 'Rutting',
+}
+
+
+def describe_prediction(predicted_class):
+    """Splits a raw class_names entry into a display-ready (type, severity)
+    pair. Severity is None for Rutting, the one class with no severity split."""
+    severity = next((s for s in ('low', 'medium', 'high') if s in predicted_class), None)
+    prefix = predicted_class
+    for suffix in (' low severity', ' medium severity', ' high severity'):
+        prefix = prefix.replace(suffix, '')
+    distress_type = DISTRESS_TYPE_LABELS.get(prefix, prefix)
+    return distress_type, severity
+
 
 # Function to preprocess the image
 def preprocess_image(image):
@@ -47,6 +68,32 @@ def preprocess_image(image):
     return img_array
 
 
+def classify_and_render(img):
+    """Shared by the upload path and the sample-image path: runs the model
+    on an already-opened PIL image, saves it as the displayed result image,
+    and renders result.html."""
+    img_array = preprocess_image(img)
+    prediction = model.predict(img_array)
+    predicted_class = class_names[np.argmax(prediction)]
+    distress_type, severity = describe_prediction(predicted_class)
+    img_path = os.path.join('static', 'uploaded_image.png')
+    img.save(img_path)
+    return render_template('result.html', distress_type=distress_type, severity=severity, image=img_path)
+
+
+# Bundled example photos shown as "try a sample" thumbnails on /classify, so
+# a visitor can see a real prediction without sourcing their own pavement
+# photo. Keyed by the slug used in the URL, not the file's own name, so the
+# route can't be pointed at an arbitrary path on disk. `file` is a static/
+# filename, used both to open the image for prediction and to render the
+# thumbnail via url_for('static', ...).
+SAMPLE_IMAGES = {
+    'pothole': {'label': 'Pothole', 'file': 'samples/pothole.png'},
+    'patching': {'label': 'Patching', 'file': 'samples/patching.jpg'},
+    'cracking': {'label': 'Cracking', 'file': 'samples/cracking.jpg'},
+}
+
+
 # Route for home page
 @app.route('/')
 def index():
@@ -56,7 +103,18 @@ def index():
 # Route for the upload/classify page
 @app.route('/classify')
 def classify():
-    return render_template('classify.html')
+    return render_template('classify.html', samples=SAMPLE_IMAGES)
+
+
+# Runs a bundled sample image through the same model/render path as a real
+# upload, so a visitor can see one real prediction with no file of their own.
+@app.route('/classify/sample/<name>')
+def classify_sample(name):
+    sample = SAMPLE_IMAGES.get(name)
+    if not sample:
+        abort(404)
+    img = Image.open(os.path.join('static', sample['file']))
+    return classify_and_render(img)
 
 
 # Route explaining the model architecture. Named model_page, not model, since
@@ -69,24 +127,14 @@ def model_page():
 # Route to handle file upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        # Get the uploaded file
-        file = request.files['file']
-        if file:
-            # Read image from file
-            # img = Image.open(io.BytesIO(file.read()))
-            img = Image.open(file)
-            # Preprocess the image
-            img_array = preprocess_image(img)
-            # Make prediction
-            prediction = model.predict(img_array)
-            # Get the predicted class
-            predicted_class = class_names[np.argmax(prediction)]
-            img_path = os.path.join('static', 'uploaded_image.png')
-            img.save(img_path)
-            print("Predicted class:", predicted_class)
-            print("Image path:", file)
-            return render_template('result.html', predicted_class=predicted_class, image=img_path)
+    file = request.files.get('file')
+    if not file or not file.filename:
+        return render_template('classify.html', error='Choose an image before analyzing.', samples=SAMPLE_IMAGES)
+    try:
+        img = Image.open(file)
+        return classify_and_render(img)
+    except Exception:
+        return render_template('classify.html', error="That file doesn't look like a valid image. Try a JPG or PNG.", samples=SAMPLE_IMAGES)
 
 
 if __name__ == '__main__':
