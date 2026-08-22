@@ -1,25 +1,41 @@
 @use 'variables' as *;
 
 // ─── Design tokens ──────────────────────────────────────────────────────────────
-// Single source of truth: every rule below reads colors through a CSS custom
-// property rather than a hardcoded hex value (see _variables.scss for the
-// short $amber / $asphalt / etc. aliases used throughout this file).
+// Direction: "The Pavement Condition Survey" (see the contract in
+// templates/home.html). The site is drawn as the literal DOT/PCI field
+// inspection form it automates: white form paper, inspection-navy ink,
+// a hazard-yellow header band, and one verdict-red reserved only for the
+// classification moment (high severity, the certification stamp, error
+// banners). Public Sans carries every heading and label (the US federal
+// design system's own face, chosen for that literal institutional tie, not
+// as a display costume); IBM Plex Mono is reserved for genuine tabular data
+// only: distress codes, the architecture table, param counts, form
+// footnotes. See DESIGN.md for the full rationale once it is written at
+// finish.
 :root {
-  --color-primary: #F2A93B;          // road-marking amber: CTAs, links, focus
-  --color-primary-rgb: 242, 169, 59;
-  --color-primary-hover: #F7C270;    // lighter tint for hover states
+  --color-paper: #f5f4ef;
+  --color-paper-alt: #ffffff;
 
-  --color-bg: #14171B;               // asphalt: page background
-  --color-bg-rgb: 20, 23, 27;
-  --color-surface: #1D2126;          // card background
-  --color-surface-raised: #262B32;   // dropzone / raised panels
+  --color-ink: #20242a;
+  --color-ink-rgb: 32, 36, 42;
+  --color-ink-dim: #565d64;
 
-  --color-text: #F4F3EF;             // off-white primary text
-  --color-text-rgb: 244, 243, 239;
+  // Decorative-only hairline (table rules, dividers): under 3:1, never used
+  // where a control's boundary depends on being seen. line-strong clears
+  // 3:1 and is the only rule color allowed on an affordance.
+  --color-line: #c9c4b4;
+  --color-line-strong: #726c5d;
 
-  --color-success: #4ADE80;          // low severity
-  --color-warning: #FBBF24;          // medium severity
-  --color-danger: #F87171;           // high severity
+  --color-navy: #0f2a4a;
+  --color-navy-rgb: 15, 42, 74;
+  --color-navy-hover: #163a63;
+
+  --color-hazard: #f4c11e;
+  --color-hazard-rgb: 244, 193, 30;
+  --color-hazard-ink: var(--color-navy);
+
+  --color-verdict: #c73a26;
+  --color-verdict-rgb: 199, 58, 38;
 }
 
 // ─── Reset ───────────────────────────────────────────────────────────────────
@@ -27,15 +43,20 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-color: $line-strong $paper;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: $asphalt;
-  color: $offwhite;
+  background: $paper;
+  color: $ink;
   font-family: $font-sans;
   line-height: 1.5;
+  font-feature-settings: "tnum" 1;
 }
 
 img {
@@ -44,454 +65,876 @@ img {
 }
 
 code {
-  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-family: $font-mono;
   font-size: 0.85em;
-  background: rgba($offwhite-rgb, 0.08);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
+  background: $paper-alt;
+  border: 1px solid $line;
+  padding: 0.1em 0.4em;
+  border-radius: $radius-sm;
 }
 
-// :not(.btn) keeps this from fighting .btn's own color rules: a plain "a" and
-// ".btn--primary:hover" tie on specificity (one class each), and the element
-// selector in "a:hover" then wins the tie-break, silently overriding the
-// button's hover color. Scoping the link reset off .btn avoids that entirely.
-a:not(.btn) {
-  color: $amber;
-  text-decoration: none;
-  transition: color $transition;
+::selection {
+  background: rgba($navy-rgb, 0.18);
+  color: $ink;
+}
 
-  &:hover {
-    color: $amber-tint;
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: $paper;
+}
+::-webkit-scrollbar-thumb {
+  background: $line-strong;
+  border-radius: $radius-sm;
+  border: 3px solid $paper;
+}
+
+a {
+  color: $navy;
+}
+a:not(.btn):hover {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid $navy;
+  outline-offset: 2px;
+}
+
+h1, h2, h3 {
+  font-family: $font-sans;
+  font-weight: $fw-bold;
+  color: $ink;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  line-height: 1.15;
+}
+
+.intro {
+  color: $ink-dim;
+  max-width: 68ch;
+  margin: 0.75rem 0 0;
+}
+
+// ─── Hazard stripe ───────────────────────────────────────────────────────────
+// The direction's one diagonal-stripe motif, used structurally (a section
+// boundary, an alert's attention marker) and nowhere else as decoration.
+@mixin hazard-stripe($height: 6px) {
+  height: $height;
+  background: repeating-linear-gradient(
+    -45deg,
+    $hazard,
+    $hazard 10px,
+    $navy 10px,
+    $navy 20px
+  );
+}
+
+.hazard-stripe {
+  @include hazard-stripe;
+}
+
+// ─── Registration corners ────────────────────────────────────────────────────
+// Printer's registration marks at the top-left and bottom-right corners of a
+// form field, the direction's framing device for anything that behaves like
+// a document field: the dropzone, the exhibit photo frame.
+@mixin registration-corners($size: 14px, $color: $navy) {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: $size;
+    height: $size;
+    pointer-events: none;
   }
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid $color;
+    border-left: 2px solid $color;
+  }
+  &::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid $color;
+    border-right: 2px solid $color;
+  }
+}
+
+// ─── Layout shells ───────────────────────────────────────────────────────────
+main {
+  flex: 1;
+  width: 100%;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 .navbar {
-  border-bottom: 1px solid $line;
-  background: $surface;
+  background: $hazard;
+}
+
+.navbar-boundary {
+  @include hazard-stripe(6px);
 }
 
 .navbar-inner {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: $offwhite;
-  font-weight: $fw-display;
-
-  &:hover {
-    color: $offwhite;
-  }
-
-  i {
-    color: $amber;
-  }
-}
-
-.navbar-links {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
-
-  a {
-    color: rgba($offwhite-rgb, 0.65);
-    font-size: 0.9rem;
-    font-weight: $fw-display;
-
-    &:hover,
-    &.active {
-      color: $amber;
-    }
-  }
-}
-
-// ─── Layout shell ────────────────────────────────────────────────────────────
-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 1.5rem;
-}
-
-.card {
-  width: 100%;
-  max-width: 480px;
-  background: $surface;
-  border: 1px solid $line;
-  border-radius: $card-radius;
-  padding: 2.5rem;
-  text-align: left;
-
-  @media (max-width: $bp-sm) {
-    padding: 1.75rem 1.25rem;
-  }
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  background: rgba($amber-rgb, 0.1);
-  border: 1px solid rgba($amber-rgb, 0.25);
-  color: $amber;
-  font-size: 0.72rem;
-  font-weight: $fw-display;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-
-  i {
-    font-size: 0.85rem;
-  }
-}
-
-h1 {
-  margin: 1rem 0 0.5rem;
-  font-size: clamp(1.5rem, 5vw, 1.85rem);
-  font-weight: $fw-display;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: $hazard-ink;
+  font-weight: $fw-bold;
+  font-size: 1.05rem;
   letter-spacing: -0.01em;
 
-  &.title--sub {
-    margin-bottom: 0.75rem;
-  }
-}
-
-.intro {
-  margin: 0 0 1.75rem;
-  color: rgba($offwhite-rgb, 0.7);
-  font-size: 0.95rem;
-}
-
-// ─── Home page ───────────────────────────────────────────────────────────────
-main.home {
-  display: block;
-  padding: 0;
-}
-
-.hero {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 5rem 1.5rem 4rem;
-  text-align: left;
-
-  h1 {
-    font-size: clamp(1.85rem, 5vw, 2.5rem);
-  }
-
-  .intro {
-    margin: 0 0 2rem;
-    max-width: 520px;
-  }
-
-  @media (max-width: $bp-sm) {
-    padding: 3.5rem 1.25rem 3rem;
-  }
-}
-
-.section {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 1.5rem 4.5rem;
-  text-align: left;
-
-  h2 {
-    font-size: clamp(1.35rem, 3.5vw, 1.65rem);
-    font-weight: $fw-display;
-    margin: 0 0 2rem;
-  }
-
-  .btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 2.5rem;
-  }
-}
-
-.distress-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  text-align: left;
-}
-
-.distress-card {
-  background: $surface;
-  border: 1px solid $line;
-  border-radius: $card-radius;
-  padding: 1.5rem;
-
-  h3 {
-    margin: 0 0 0.4rem;
-    font-size: 1rem;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: rgba($offwhite-rgb, 0.65);
-  }
-}
-
-.steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  text-align: left;
-  max-width: 560px;
-
-  li {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  h3 {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: rgba($offwhite-rgb, 0.65);
-  }
-}
-
-.model-table-wrap {
-  overflow-x: auto;
-  border: 1px solid $line;
-  border-radius: $card-radius;
-  margin-bottom: 1.5rem;
-}
-
-.model-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-  white-space: nowrap;
-
-  th, td {
-    padding: 0.85rem 1.1rem;
-    text-align: left;
-    border-bottom: 1px solid $line;
-  }
-
-  th {
-    background: $surface;
-    color: rgba($offwhite-rgb, 0.6);
-    font-size: 0.72rem;
-    font-weight: $fw-display;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  td {
-    color: rgba($offwhite-rgb, 0.85);
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-    border-top: 1px solid $line;
-    padding-top: 1rem;
-  }
-}
-
-.step-num {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background: rgba($amber-rgb, 0.1);
-  border: 1px solid rgba($amber-rgb, 0.3);
-  color: $amber;
-  font-weight: $fw-display;
-  font-size: 0.9rem;
-}
-
-// ─── Upload form ─────────────────────────────────────────────────────────────
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.dropzone {
-  display: none;
-}
-
-.dropzone-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 2rem 1rem;
-  border: 1.5px dashed rgba($offwhite-rgb, 0.25);
-  border-radius: 12px;
-  background: $surface-raised;
-  color: rgba($offwhite-rgb, 0.75);
-  cursor: pointer;
-  transition: border-color $transition, color $transition;
-
   i {
-    font-size: 1.75rem;
-    color: $amber;
-  }
-
-  &:hover,
-  &.has-file {
-    border-color: $amber;
-    color: $offwhite;
+    font-size: 1.1rem;
   }
 }
 
-.dropzone-hint {
-  font-size: 0.8rem;
-  color: rgba($offwhite-rgb, 0.5);
+.navbar-tabs {
+  display: flex;
+  gap: 1.5rem;
+  margin-right: auto;
+  margin-left: 1rem;
+
+  a {
+    color: $hazard-ink;
+    text-decoration: none;
+    font-weight: $fw-semibold;
+    font-size: 0.92rem;
+    padding: 0.3rem 0.1rem;
+    border-bottom: 2px solid transparent;
+    transition: border-color $transition, opacity $transition;
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &.active {
+      opacity: 1;
+      border-bottom-color: $navy;
+    }
+  }
 }
 
 // ─── Buttons ─────────────────────────────────────────────────────────────────
 .btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
-  border: none;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: $fw-display;
-  text-decoration: none;
+  gap: 0.55rem;
+  font-family: $font-sans;
+  font-weight: $fw-semibold;
+  font-size: 0.92rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: $radius-sm;
+  border: 1.5px solid transparent;
   cursor: pointer;
-  transition: background $transition, transform $transition;
+  text-decoration: none;
+  transition: background $transition, color $transition, border-color $transition, transform $transition;
 
-  i {
-    font-size: 1rem;
-  }
-
-  &:focus-visible {
-    outline: 2px solid $amber;
-    outline-offset: 2px;
+  &:active {
+    transform: translateY(1px);
   }
 }
 
 .btn--primary {
-  background: $amber;
-  color: $asphalt;
+  background: $navy;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba($navy-rgb, 0.28);
 
   &:hover {
-    background: $amber-tint;
-  }
-
-  &:active {
-    transform: scale(0.98);
+    background: $navy-hover;
+    box-shadow: 0 3px 8px rgba($navy-rgb, 0.32);
   }
 }
 
 .btn--ghost {
   background: transparent;
-  border: 1px solid rgba($offwhite-rgb, 0.25);
-  color: $offwhite;
+  color: $navy;
+  border-color: $navy;
 
   &:hover {
-    border-color: $amber;
-    color: $amber;
+    background: rgba($navy-rgb, 0.06);
+  }
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+
+// ─── Badges ──────────────────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  font-weight: $fw-medium;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: $navy;
+  background: rgba($navy-rgb, 0.07);
+  border: 1px solid rgba($navy-rgb, 0.25);
+  border-radius: $radius-tag;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 1rem;
+}
+
+// ─── Cover (home hero / report cover sheet) ─────────────────────────────────
+.cover {
+  border-bottom: 1px solid $line;
+  padding: 3rem 0 2.5rem;
+}
+
+.cover-grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: start;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+}
+
+.cover-copy h1 {
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  line-height: 1.12;
+}
+
+// ─── Summary table (ruled key : value, dotted leaders) ──────────────────────
+.summary-panel {
+  background: $paper-alt;
+  border: 1px solid $line;
+  padding: 1.25rem 1.4rem;
+}
+
+.summary-panel-title {
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  font-weight: $fw-medium;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $ink-dim;
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid $line;
+}
+
+.summary-table {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.summary-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed $line;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .row-label {
+    font-size: 0.88rem;
+    color: $ink-dim;
+    white-space: nowrap;
+  }
+
+  .row-leader {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted $line-strong;
+    align-self: center;
+    height: 0;
+  }
+
+  .summary-value {
+    font-family: $font-mono;
+    font-weight: $fw-semibold;
+    font-size: 0.95rem;
+    color: $navy;
+    white-space: nowrap;
+  }
+}
+
+.form-footnote {
+  max-width: 1080px;
+  margin: 2rem auto 0;
+  padding: 0.75rem 1.5rem 0;
+  border-top: 1px solid $line;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: $ink-dim;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
+}
+
+// ─── Sections ────────────────────────────────────────────────────────────────
+.section {
+  padding: 2.75rem 1.5rem;
+  max-width: 1080px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 1.35rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid $ink;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.section--band {
+  background: $paper-alt;
+  border-top: 1px solid $line;
+  border-bottom: 1px solid $line;
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+
+  > h2, > .legend-note, > .legend-table-wrap {
+    max-width: 1080px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  h2 {
+    padding-top: 2.75rem;
+  }
+
+  .legend-note {
+    color: $ink-dim;
+    font-size: 0.9rem;
+    margin: 0.5rem auto 1.75rem;
+  }
+}
+
+// ─── Legend table (distress code legend) ────────────────────────────────────
+.legend-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    font-family: $font-mono;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $ink-dim;
+    font-weight: $fw-medium;
+    padding: 0 0 0.6rem;
+    border-bottom: 2px solid $ink;
+  }
+
+  td {
+    padding: 1rem 0.75rem 1rem 0;
+    border-bottom: 1px solid $line;
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+    padding-bottom: 2.75rem;
+  }
+}
+
+.legend-code {
+  font-family: $font-mono;
+  font-weight: $fw-semibold;
+  font-size: 0.95rem;
+  color: $navy;
+  background: rgba($navy-rgb, 0.06);
+  border: 1px solid rgba($navy-rgb, 0.3);
+  border-radius: $radius-tag;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+}
+
+.legend-name {
+  font-weight: $fw-semibold;
+  white-space: nowrap;
+}
+
+.legend-desc {
+  color: $ink-dim;
+  font-size: 0.92rem;
+}
+
+// ─── Procedure steps ─────────────────────────────────────────────────────────
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+
+  li {
+    display: flex;
+    gap: 1.1rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  p {
+    color: $ink-dim;
+    margin: 0;
+    font-size: 0.94rem;
+  }
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-weight: $fw-semibold;
+  font-size: 0.9rem;
+  color: $navy;
+  border: 1.5px solid $navy;
+  border-radius: $radius-sm;
+}
+
+// ─── Cards (classify / result) ───────────────────────────────────────────────
+.card {
+  max-width: 640px;
+  margin: 2.75rem auto;
+  padding: 2.25rem 2rem 2.5rem;
+  background: $paper-alt;
+  border: 1px solid $line;
+
+  h1, .title--sub {
+    font-size: 1.6rem;
+    margin-bottom: 0;
+  }
+}
+
+// ─── Form alert ──────────────────────────────────────────────────────────────
+.form-alert {
+  margin: 1.1rem 0 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.form-alert--error {
+  background: rgba($verdict-rgb, 0.06);
+  color: $ink;
+  border: 1px solid rgba($verdict-rgb, 0.35);
+  border-top: 3px solid $verdict;
+
+  i {
+    color: $verdict;
+  }
+}
+
+// ─── Dropzone ────────────────────────────────────────────────────────────────
+.dropzone {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dropzone-label {
+  @include registration-corners(14px, $line-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  margin-top: 1.5rem;
+  border: 1px dashed $line-strong;
+  background: $paper;
+  cursor: pointer;
+  transition: background $transition, border-color $transition;
+
+  i {
+    font-size: 1.6rem;
+    color: $navy;
+  }
+
+  span:not(.dropzone-hint) {
+    font-weight: $fw-semibold;
+    color: $ink;
+  }
+
+  &:hover {
+    background: rgba($navy-rgb, 0.04);
+  }
+
+  &.has-file {
+    border-style: solid;
+    border-color: $navy;
+
+    &::before, &::after {
+      border-color: $navy;
+    }
+  }
+}
+
+.dropzone:focus-visible + .dropzone-label {
+  outline: 2px solid $navy;
+  outline-offset: 3px;
+}
+
+.dropzone-hint {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $ink-dim;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ─── Samples (logged evidence tiles) ─────────────────────────────────────────
+.samples {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $line;
+}
+
+.samples-label {
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: $ink-dim;
+  margin: 0 0 0.9rem;
+}
+
+.samples-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sample-thumb {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  border: 1px solid $line;
+  background: $paper;
+  overflow: hidden;
+  transition: border-color $transition, transform $transition;
+
+  img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: grayscale(0.15) contrast(1.02);
+  }
+
+  span {
+    display: block;
+    padding: 0.5rem 0.6rem;
+    font-family: $font-mono;
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    color: $ink;
+    border-top: 1px solid $line;
+    background: $paper-alt;
+  }
+
+  &:hover {
+    border-color: $navy;
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline-offset: 2px;
+  }
+}
+
+// ─── Model architecture table ────────────────────────────────────────────────
+.model-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $line;
+}
+
+.model-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-mono;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.86rem;
+
+  th, td {
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    white-space: nowrap;
+  }
+
+  thead th {
+    background: $navy;
+    color: #fff;
+    font-weight: $fw-medium;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $line;
+
+    &:nth-child(even) {
+      background: rgba($navy-rgb, 0.035);
+    }
+
+    &:last-child {
+      border-bottom: none;
+      border-top: 2px solid $ink;
+      font-weight: $fw-semibold;
+    }
   }
 }
 
 // ─── Result page ─────────────────────────────────────────────────────────────
-.result-image {
-  border-radius: 10px;
+.exhibit-frame {
+  @include registration-corners(16px, $navy);
+  position: relative;
   border: 1px solid $line;
-  margin-bottom: 1.5rem;
-  max-height: 280px;
-  width: 100%;
-  object-fit: cover;
+  padding: 0.6rem;
+  margin: 1.5rem 0 1.25rem;
+  background: $paper;
 }
 
-.severity {
-  display: inline-flex;
+.exhibit-tag {
+  position: absolute;
+  top: -0.65rem;
+  left: 1rem;
+  background: $navy;
+  color: #fff;
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+}
+
+.result-image {
+  width: 100%;
+}
+
+.severity-checklist {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0.25rem 0 1.25rem;
+  flex-wrap: wrap;
+}
+
+.severity-item {
+  display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: $fw-display;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.75rem;
+  gap: 0.45rem;
+  font-family: $font-mono;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  color: $ink-dim;
 
-  &::before {
-    content: '';
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: currentColor;
+  .box {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1.5px solid $line-strong;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.7rem;
   }
 
-  &--low {
-    background: rgba($success, 0.12);
-    color: $success;
+  &.is-checked {
+    color: $ink;
+    font-weight: $fw-semibold;
+
+    .box {
+      border-color: $navy;
+      background: $navy;
+    }
   }
 
-  &--medium {
-    background: rgba($warning, 0.12);
-    color: $warning;
-  }
-
-  &--high {
-    background: rgba($danger, 0.12);
-    color: $danger;
+  // Verdict-red stays reserved for the classification moment: only the
+  // high-severity check carries it. Low and medium confirm in navy, the
+  // system's ordinary ink, so red keeps its single meaning site-wide.
+  &.severity-high.is-checked {
+    color: $verdict;
+    .box { background: $verdict; }
   }
 }
 
 .result-class {
+  font-size: 1.65rem;
+  font-weight: $fw-bold;
+  color: $ink;
   margin: 0 0 1.75rem;
-  font-size: 1.1rem;
-  font-weight: $fw-display;
+}
+
+// Certification stamp: the direction's signature interaction. It renders
+// already visible (no hidden-until-JS state) and animates from an
+// off-register "impressed" start position to rest, once, on load.
+.stamp {
+  width: 108px;
+  height: 108px;
+  flex-shrink: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.stamp--navy { color: $navy; }
+.stamp--verdict { color: $verdict; }
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stamp {
+    animation: stamp-impress $transition-stamp both;
+  }
+}
+
+@keyframes stamp-impress {
+  0% {
+    transform: scale(1.5) rotate(2deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.94) rotate(-7deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(-6deg);
+    opacity: 1;
+  }
 }
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
-footer {
-  padding: 1.5rem;
-  text-align: center;
-  font-size: 0.8rem;
-  color: rgba($offwhite-rgb, 0.45);
+.site-footer {
+  border-top: 3px solid $navy;
+  background: $paper-alt;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-family: $font-mono;
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: $ink-dim;
+}
+
+.footer-credit {
+  color: $ink-dim;
+  text-decoration: none;
+
+  strong {
+    color: $navy;
+    font-weight: 600;
+  }
+
+  &:hover strong {
+    color: $verdict;
+  }
 }
 
 .footer-links {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 1.25rem;
 
   a {
+    color: $ink-dim;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    color: rgba($offwhite-rgb, 0.6);
+    gap: 0.4rem;
 
     &:hover {
-      color: $amber;
+      color: $navy;
     }
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+@media (max-width: $bp-md) {
+  .navbar-tabs {
+    margin-left: 0;
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 1.25rem;
+  }
+
+  .card {
+    margin: 1.5rem auto;
+    padding: 1.75rem 1.35rem 2rem;
+  }
+
+  .samples-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

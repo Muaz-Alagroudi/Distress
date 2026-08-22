@@ -3,31 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distress Detection</title>
+    <title>Methodology &middot; PaveScan</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
 {% include 'navbar.html' %}
 <main class="home">
-    <div class="hero">
-        <h1>Inside the model</h1>
-        <p class="intro">
-            distressCNN.keras is a Keras sequential convolutional neural network: two
-            convolution/pooling blocks that pull features out of the image, followed by two
-            dense layers that turn those features into a class prediction.
-        </p>
+    <div class="cover">
+        <div class="container">
+            <h1>Test methodology</h1>
+            <p class="intro">
+                distressCNN.keras is a Keras sequential convolutional neural network: two
+                convolution/pooling blocks that pull features out of the image, followed by two
+                dense layers that turn those features into a class prediction.
+            </p>
+        </div>
     </div>
 
     <div class="section">
-        <h2>How an image becomes a prediction</h2>
+        <h2>How an image becomes a classification</h2>
         <ol class="steps">
             <li>
                 <span class="step-num">1</span>
                 <div>
                     <h3>Input image</h3>
-                    <p>Any JPG or PNG uploaded on the Classify page, in whatever size and color it was taken.</p>
+                    <p>Any JPG or PNG logged on the classify page, in whatever size and color it was taken.</p>
                 </div>
             </li>
             <li>
@@ -48,14 +53,14 @@
                 <span class="step-num">4</span>
                 <div>
                     <h3>Output</h3>
-                    <p>A softmax turns those scores into probabilities. The highest one is shown as the predicted distress type and severity.</p>
+                    <p>A softmax turns those scores into probabilities. The highest one is certified as the classification on the survey record.</p>
                 </div>
             </li>
         </ol>
     </div>
 
     <div class="section">
-        <h2>Architecture</h2>
+        <h2>Apparatus &amp; architecture</h2>
         <div class="model-table-wrap">
             <table class="model-table">
                 <thead>

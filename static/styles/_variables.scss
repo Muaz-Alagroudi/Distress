@@ -3,36 +3,56 @@
 // short Sass aliases for use here, plus "-rgb" companions for rgba() calls: a
 // CSS custom property can't be passed directly as rgba()'s color argument, so
 // opacity variants need the raw channel numbers instead.
-$amber:      var(--color-primary);
-$amber-rgb:  var(--color-primary-rgb);
-$amber-tint: var(--color-primary-hover);
+$paper:       var(--color-paper);
+$paper-alt:   var(--color-paper-alt);
 
-$asphalt:     var(--color-bg);
-$asphalt-rgb: var(--color-bg-rgb);
-$surface:     var(--color-surface);
-$surface-raised: var(--color-surface-raised);
+$ink:      var(--color-ink);
+$ink-rgb:  var(--color-ink-rgb);
+$ink-dim:  var(--color-ink-dim);
 
-$offwhite:     var(--color-text);
-$offwhite-rgb: var(--color-text-rgb);
+// $line is decorative only (table hairlines, dividers): under 3:1, never used
+// as a boundary an interaction depends on. $line-strong clears 3:1 and is the
+// only rule color used for an affordance (the dropzone border, focus-adjacent
+// outlines).
+$line:       var(--color-line);
+$line-strong: var(--color-line-strong);
 
-$success: var(--color-success);
-$warning: var(--color-warning);
-$danger:  var(--color-danger);
+$navy:       var(--color-navy);
+$navy-rgb:   var(--color-navy-rgb);
+$navy-hover: var(--color-navy-hover);
 
-// Hairlines on the dark background
-$line: rgba($offwhite-rgb, 0.1);
+$hazard:     var(--color-hazard);
+$hazard-rgb: var(--color-hazard-rgb);
+$hazard-ink: var(--color-hazard-ink);
+
+// Verdict red is reserved for the classification moment only: high-severity
+// fills, the certification stamp on a high-severity result, error banners.
+// Never a decorative accent elsewhere on the site.
+$verdict:     var(--color-verdict);
+$verdict-rgb: var(--color-verdict-rgb);
+
+// Severity has no colors of its own: low/medium confirm in $navy (the
+// system's ordinary ink), high alone borrows $verdict, the classification
+// moment's one reserved accent.
 
 // ─── Typography ────────────────────────────────────────────────────────────────
-$fw-display: 600;
-$fw-body:    400;
-$font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+$fw-regular:  400;
+$fw-medium:   500;
+$fw-semibold: 600;
+$fw-bold:     700;
+$font-sans: 'Public Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+$font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
 // ─── Spacing ─────────────────────────────────────────────────────────────────
-$card-radius: 16px;
+$radius-sm:  2px;
+$radius-md:  3px;
+$radius-tag: 2px;
 
 // ─── Breakpoints ─────────────────────────────────────────────────────────────
 $bp-sm: 480px;
 $bp-md: 768px;
+$bp-lg: 1040px;
 
 // ─── Transitions ─────────────────────────────────────────────────────────────
-$transition: 0.2s ease;
+$transition: 0.15s ease;
+$transition-stamp: 0.5s cubic-bezier(0.16, 1, 0.3, 1);

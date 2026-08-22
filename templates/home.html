@@ -3,60 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distress Detection</title>
+    <title>PaveScan &middot; Pavement Condition Survey</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
 <body>
+<!--
+THESIS: The site is the literal DOT/PCI field-inspection form it automates,
+not an AI dashboard.
+OWN-WORLD: Hazard-yellow header band, inspection-navy ink, asphalt-charcoal
+text, white form paper. Public Sans for every form heading and label,
+IBM Plex Mono reserved for real codes and data. Ruled ledger tables, a
+numbered distress-code legend, rubber-stamp certification marks, printer's
+registration corners, one verdict-red reserved for the classification moment.
+STORY: A visitor recognizes the real inspection genre this automates, logs a
+photo as a sample unit, and receives a stamped, certified survey record they
+trust because it reads like the real form.
+FIRST VIEWPORT: Hazard-yellow header band; left column title block, intro,
+and Log Sample Unit / View Methodology CTAs; right column a ruled
+key:value summary panel with dotted leaders; a mono form-footnote strip
+below stating the real model facts.
+FORM: candidate 1 of 7 grounded directions (DOT/PCI field-inspection form),
+seed key e0a861d5.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the
+finish review, the verdict, DESIGN.md, and every shipping raster carrying
+its provenance.
+-->
 {% include 'navbar.html' %}
 <main class="home">
-    <div class="hero">
-        <h1>See road distress the moment you spot it</h1>
-        <p class="intro">
-            Distress Detection is a Keras convolutional neural network trained to recognize
-            common pavement distress from a single photo, no measuring tape or inspection
-            software required. Upload a picture of a road surface and get back the distress
-            type and its severity in seconds.
+    <div class="cover">
+        <div class="cover-grid">
+            <div class="cover-copy">
+                <h1>See road distress the moment you spot it</h1>
+                <p class="intro">
+                    PaveScan is a Keras convolutional neural network trained to classify pavement
+                    distress by type and severity from a single photograph, no measuring tape or
+                    inspection software required. Log a photo of a road surface and get back a
+                    certified classification in seconds.
+                </p>
+                <div class="btn-group">
+                    <a href="{{ url_for('classify') }}" class="btn btn--primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Log sample unit
+                    </a>
+                    <a href="{{ url_for('model_page') }}" class="btn btn--ghost">
+                        <i class="fa-solid fa-diagram-project"></i> View methodology
+                    </a>
+                </div>
+            </div>
+            <div class="summary-panel">
+                <p class="summary-panel-title">Survey capability summary</p>
+                <div class="summary-table">
+                    <div class="summary-row">
+                        <span class="row-label">Distress classes recognized</span>
+                        <span class="row-leader"></span>
+                        <span class="summary-value">13</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="row-label">Severity levels</span>
+                        <span class="row-leader"></span>
+                        <span class="summary-value">3</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="row-label">Photo per analysis</span>
+                        <span class="row-leader"></span>
+                        <span class="summary-value">1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="form-footnote">
+            <span>MODEL distressCNN.keras</span><span>&middot;</span>
+            <span>1,626,253 PARAMS</span>
         </p>
-        <a href="{{ url_for('classify') }}" class="btn btn--primary">
-            <i class="fa-solid fa-magnifying-glass"></i> Classify an image
-        </a>
     </div>
 
-    <div class="section">
-        <h2>What it detects</h2>
-        <div class="distress-grid">
-            <div class="distress-card">
-                <h3>Potholes</h3>
-                <p>Bowl-shaped voids in the pavement surface, rated low, medium, or high severity.</p>
-            </div>
-            <div class="distress-card">
-                <h3>Patching</h3>
-                <p>Repaired sections of the road, flagged so crews can track repair quality over time.</p>
-            </div>
-            <div class="distress-card">
-                <h3>Cracking</h3>
-                <p>Longitudinal and transverse cracks running with or across the direction of traffic.</p>
-            </div>
-            <div class="distress-card">
-                <h3>Ravelling &amp; weathering</h3>
-                <p>Surface aggregate wearing away from age, traffic, or exposure to the elements.</p>
-            </div>
-            <div class="distress-card">
-                <h3>Rutting</h3>
-                <p>Channelized depressions worn into wheel paths by repeated, heavy loading.</p>
-            </div>
+    <div class="section--band">
+        <h2>Distress code legend</h2>
+        <p class="legend-note">Five distress types, each rated low, medium, or high severity except rutting, which the model scores as a single class: 4 &times; 3 + 1 = the 13 trained classes above.</p>
+        <div class="legend-table-wrap">
+            <table class="legend-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="legend-code">01</span></td>
+                        <td class="legend-name">Potholes</td>
+                        <td class="legend-desc">Bowl-shaped voids in the pavement surface, rated low, medium, or high severity.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="legend-code">02</span></td>
+                        <td class="legend-name">Patching</td>
+                        <td class="legend-desc">Repaired sections of the road, flagged so crews can track repair quality over time.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="legend-code">03</span></td>
+                        <td class="legend-name">Cracking</td>
+                        <td class="legend-desc">Longitudinal and transverse cracks running with or across the direction of traffic.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="legend-code">04</span></td>
+                        <td class="legend-name">Ravelling &amp; weathering</td>
+                        <td class="legend-desc">Surface aggregate wearing away from age, traffic, or exposure to the elements.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="legend-code">05</span></td>
+                        <td class="legend-name">Rutting</td>
+                        <td class="legend-desc">Channelized depressions worn into wheel paths by repeated, heavy loading.</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <div class="section">
-        <h2>How it works</h2>
+        <h2>Survey procedure</h2>
         <ol class="steps">
             <li>
                 <span class="step-num">1</span>
                 <div>
-                    <h3>Upload a photo</h3>
+                    <h3>Log a photo</h3>
                     <p>Any JPG or PNG of a road surface, taken from a normal walking or driving distance.</p>
                 </div>
             </li>
@@ -70,19 +144,11 @@
             <li>
                 <span class="step-num">3</span>
                 <div>
-                    <h3>Get your result</h3>
-                    <p>See the predicted distress type and severity alongside your uploaded image.</p>
+                    <h3>Get your survey record</h3>
+                    <p>See the certified distress type and severity alongside your logged photo.</p>
                 </div>
             </li>
         </ol>
-        <div class="btn-group">
-            <a href="{{ url_for('classify') }}" class="btn btn--primary">
-                <i class="fa-solid fa-magnifying-glass"></i> Classify an image
-            </a>
-            <a href="{{ url_for('model_page') }}" class="btn btn--ghost">
-                <i class="fa-solid fa-diagram-project"></i> View the model
-            </a>
-        </div>
     </div>
 </main>
 {% include 'footer.html' %}

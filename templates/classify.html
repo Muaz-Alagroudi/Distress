@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distress Detection</title>
+    <title>Log Sample Unit &middot; PaveScan</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 </head>
@@ -12,23 +15,42 @@
 {% include 'navbar.html' %}
 <main>
     <div class="card">
-        <span class="badge"><i class="fa-solid fa-image"></i> Upload a photo</span>
-        <h1>Classify a road surface</h1>
+        <h1>Log a sample unit</h1>
         <p class="intro">
-            JPG or PNG. The model looks for potholes, patching, rutting, ravelling, and cracking.
+            JPG or PNG. The model scores potholes, patching, cracking, ravelling &amp; weathering, and rutting.
         </p>
+
+        {% if error %}
+        <p class="form-alert form-alert--error" role="alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+        </p>
+        {% endif %}
 
         <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept="image/*" class="dropzone" id="file-upload" required>
             <label for="file-upload" class="dropzone-label" id="dropzone-label">
                 <i class="fa-solid fa-cloud-arrow-up"></i>
-                <span id="dropzone-text">Choose an image</span>
+                <span id="dropzone-text">Attach a photo</span>
                 <span class="dropzone-hint" id="dropzone-hint">JPG or PNG</span>
             </label>
             <button type="submit" class="btn btn--primary">
-                <i class="fa-solid fa-magnifying-glass"></i> Analyze image
+                <i class="fa-solid fa-magnifying-glass"></i> Log sample unit
             </button>
         </form>
+
+        {% if samples %}
+        <div class="samples">
+            <p class="samples-label">Or select a logged sample</p>
+            <div class="samples-grid">
+                {% for key, sample in samples.items() %}
+                <a href="{{ url_for('classify_sample', name=key) }}" class="sample-thumb">
+                    <img src="{{ url_for('static', filename=sample.file) }}" alt="Sample {{ sample.label|lower }} photo, click to analyze it">
+                    <span>SAMPLE &middot; {{ sample.label }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </main>
 {% include 'footer.html' %}

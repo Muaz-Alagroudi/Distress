@@ -1,12 +1,15 @@
 <nav class="navbar">
     <div class="navbar-inner">
         <a href="{{ url_for('index') }}" class="navbar-brand">
-            <i class="fa-solid fa-road"></i> Distress Detection
+            <i class="fa-solid fa-road"></i> PaveScan
         </a>
-        <div class="navbar-links">
+        <div class="navbar-tabs">
             <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a>
-            <a href="{{ url_for('classify') }}" class="{{ 'active' if request.endpoint in ('classify', 'predict') else '' }}">Classify</a>
-            <a href="{{ url_for('model_page') }}" class="{{ 'active' if request.endpoint == 'model_page' else '' }}">Model</a>
+            <a href="{{ url_for('model_page') }}" class="{{ 'active' if request.endpoint == 'model_page' else '' }}">Methodology</a>
         </div>
+        <a href="{{ url_for('classify') }}" class="btn btn--primary">
+            <i class="fa-solid fa-magnifying-glass"></i> Classify
+        </a>
     </div>
 </nav>
+<div class="navbar-boundary" role="presentation"></div>
