@@ -91,6 +91,7 @@ SAMPLE_IMAGES = {
     'pothole': {'label': 'Pothole', 'file': 'samples/pothole.png'},
     'patching': {'label': 'Patching', 'file': 'samples/patching.jpg'},
     'cracking': {'label': 'Cracking', 'file': 'samples/cracking.jpg'},
+    'rutting': {'label': 'Rutting', 'file': 'samples/rutting.jpg'},
 }
 
 

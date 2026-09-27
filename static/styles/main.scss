@@ -937,4 +937,38 @@ main {
   .samples-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .legend-table {
+    thead {
+      display: none;
+    }
+
+    tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      column-gap: 0.6rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid $line;
+    }
+
+    tr:last-child {
+      border-bottom: none;
+      padding-bottom: 1rem;
+    }
+
+    td {
+      display: block;
+      padding: 0;
+      border-bottom: none;
+    }
+  }
+
+  .legend-name {
+    white-space: normal;
+  }
+
+  .legend-desc {
+    flex-basis: 100%;
+  }
 }
